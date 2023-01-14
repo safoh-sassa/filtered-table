@@ -1,1 +1,1 @@
-Seacrhing table by first name or full name
+React TypeScript table with seacrhing by first name or full name
