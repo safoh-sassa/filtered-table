@@ -51,7 +51,6 @@ export default function App() {
   }
 
   const handleChange = (e: any) => {
-    setFiltered([])
     const val = e.target.value
     let hasSpace = (/\s/).test(val)
     let filteredParents
