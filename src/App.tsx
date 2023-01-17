@@ -1,5 +1,6 @@
-import Table from "./components/table";
 import React, { useState } from 'react';
+import Table from "./components/table";
+import { parentsData } from "./data";
 
 const columns = [
   {
@@ -15,43 +16,23 @@ const columns = [
 ];
 
 export default function App() {
-  const [parents, setParents] = useState([
-    {
-      id: "ID_01",
-      firstName: "Karel",
-      lastName: "Novák"
-    },
-    {
-      id: "ID_02",
-      firstName: "Jakub",
-      lastName: "Svoboda"
-    },
-    {
-      id: "ID_03",
-      firstName: "Anna",
-      lastName: "Veselá"
-    },
-    {
-      id: "ID_04",
-      firstName: "Karel",
-      lastName: "Nový"
-    }
-  ]);
-
+  interface dataTyp  {id?:string,firstName:string,lastName:string}
+  interface filterTyp  {firstName:string,lastName:string}
+  const [parents] = useState<dataTyp[]>(parentsData);
   const [filtered, setFiltered] = useState([])
   const [found, setFound] = useState(false)
-  const filterData = (data: any, filter: any): any => {
-    return data.filter(function (item: any) {
-      for (var key in filter) {
-        if (item[key] === undefined || !item[key].toLowerCase().startsWith(filter[key].toLowerCase()))
+
+  const filterData = (data: dataTyp[], filter:filterTyp ): any  => {
+    return data.filter( (item:dataTyp ): boolean => {
+      for (var key  in filter) {
+        if (item[key as keyof filterTyp] === undefined || !item[key as keyof filterTyp].toLowerCase().startsWith(filter[key as keyof filterTyp].toLowerCase()))
           return false;
       }
       return true;
     })
   }
 
-  const handleChange = (e: any) => {
-    const val = e.target.value
+  const handleChange = (val: string) => {
     let hasSpace = (/\s/).test(val)
     let filteredParents
     if (hasSpace) {
@@ -61,9 +42,11 @@ export default function App() {
         lastName: fullname[1]
       };
       filteredParents = filterData(parents, filter)
-    } else {
+    } 
+    else {
       const filter = {
-        firstName: val
+        firstName: val,
+        lastName: ''
       };
       filteredParents = filterData(parents, filter)
     }
@@ -72,13 +55,10 @@ export default function App() {
     setFound(true)
   };
 
-
   return (
     <div style={{ width: "80%", margin: "auto", marginTop: "80px" }}>
-      <input type="text" placeholder="Search" style={{ marginLeft: "20px" }} onChange={handleChange} />
+      <input type="text" placeholder="Search" style={{ marginLeft: "20px" }} onChange={(e)=>{handleChange(e.target.value)}} />
       <Table columns={columns} parents={found ? filtered : parents} />
     </div>
   )
 }
-
-
